@@ -1,0 +1,27 @@
+# Ignore node_modules as they will be installed inside the container
+node_modules
+
+# Ignore environment-specific configuration files
+# .env
+
+# Logs
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Ignore TypeScript output directories
+dist
+
+# Ignore Docker configuration files
+Dockerfile
+docker-compose.yml
+
+# Ignore Git configuration files
+.git
+.gitignore
+
+# Ignore editor files
+.vscode
+.idea
+.DS_Store
+.env
