@@ -36,6 +36,11 @@ To start the project, execute:
 docker-compose up
 ```
 
+Once project is running, you have to run migrations in each service with the following command:
+```bash
+npm run migration
+```
+
 Once project is running, you have to run seeders in each service with the following command:
 ```bash
 npm run seed
