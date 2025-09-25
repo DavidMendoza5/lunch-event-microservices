@@ -36,6 +36,14 @@ To start the project, execute:
 docker-compose up
 ```
 
+Once project is running, you have to run seeders in each service with the following command:
+```bash
+npm run seed
+```
+Seeders order:
+1. Seeders in warehouse service.
+2. Seeders in kitchen service.
+
 ## Main Goal
 
 The main objective is to provide a scalable solution that can:

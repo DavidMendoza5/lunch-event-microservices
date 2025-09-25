@@ -23,6 +23,12 @@ export default class RecipeModel extends Model<RecipeModel, IRecipeModel> {
   })
   name!: string;
 
+  @Column({
+    type: DataType.DATE,
+    allowNull: false,
+  })
+  updated_at!: Date;
+
   @HasMany(() => RecipeIngredientModel, 'recipe_id')
   recipe_ingredients!: RecipeIngredientModel[];
 

@@ -1,6 +1,6 @@
 import RabbitMQ from '../connection';
 
-export class IngredientProducer {
+export class OrderDishProducer {
   private exchange = 'warehouse.ingredients';
 
   async publish(event: object) {

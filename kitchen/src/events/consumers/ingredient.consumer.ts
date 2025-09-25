@@ -13,14 +13,22 @@ export class IngredientConsumer {
     const q = await channel.assertQueue(this.queue, { durable: true });
     await channel.bindQueue(q.queue, this.exchange, '');
 
+    channel.prefetch(5);
+
     channel.consume(q.queue, async (msg) => {
-      if (msg) {
+      if (!msg) return;
+
+      try {
         const event = JSON.parse(msg.content.toString());
         console.log('🍽️ Kitchen received ingredient event:', event);
 
         await IngredientModel.bulkCreate([event.data]);
 
         channel.ack(msg);
+      } catch (err) {
+        console.error('❌ Error processing ingredient event:', err);
+
+        channel.nack(msg, false, true);
       }
     });
 

@@ -1,19 +1,19 @@
 import IIngredientModel from '@/models/interfaces/ingredient.interface';
 import { Transaction, WhereOptions } from 'sequelize';
-import { IBaseRepository } from './base.repository';
+import { IBaseRepository } from './base.repository.interface';
 
 export interface IIngredientRepository
   extends IBaseRepository<IIngredientModel> {
   findByFilter(
     filters: WhereOptions,
-    transactions?: Transaction,
+    transaction?: Transaction,
   ): Promise<IIngredientModel[] | null>;
   save(
-    ingredient: IIngredientModel,
-    transactions?: Transaction,
+    data: IIngredientModel,
+    transaction?: Transaction,
   ): Promise<IIngredientModel>;
   bulkCreate(
-    ingredient: IIngredientModel[],
-    transactions?: Transaction,
+    data: IIngredientModel[],
+    transaction?: Transaction,
   ): Promise<void>;
 }

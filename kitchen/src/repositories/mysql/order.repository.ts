@@ -1,16 +1,17 @@
-import { IOrderRepository } from '@/interfaces/order.repository.interface';
+import { IOrderRepository } from '@/repositories/mysql/interfaces/order.repository.interface';
 import OrderModel from '@/models/order.model';
 import IOrderModel from '@/models/interfaces/order.interface';
 import { Transaction, WhereOptions } from 'sequelize';
 import { Service } from 'typedi';
+import IOrder from '@/interfaces/order-response.interface';
 
 @Service()
 export class OrderRepository implements IOrderRepository {
   async bulkCreate(
-    ingredient: IOrderModel[],
+    order: IOrderModel[],
     transaction?: Transaction,
   ): Promise<void> {
-    await OrderModel.bulkCreate(ingredient, {
+    await OrderModel.bulkCreate(order, {
       transaction,
       validate: true,
     });
@@ -18,24 +19,22 @@ export class OrderRepository implements IOrderRepository {
   async findByFilter(
     filters: WhereOptions,
     transaction?: Transaction,
-  ): Promise<IOrderModel[] | null> {
-    const ingredients = await OrderModel.findAll({
+  ): Promise<IOrder[] | null> {
+    const orders = await OrderModel.findAll({
       where: filters,
       transaction,
     });
-    return ingredients.map((ingredient) => this.toDomain(ingredient));
+    return orders.map((order) => this.toDomain(order));
   }
-  async save(
-    ingredient: IOrderModel,
-    transaction?: Transaction,
-  ): Promise<IOrderModel> {
-    return await OrderModel.create(ingredient, { transaction });
+  async save(order: IOrderModel, transaction?: Transaction): Promise<IOrder> {
+    return await OrderModel.create(order, { transaction });
   }
-  private toDomain(ingredient: OrderModel): IOrderModel {
+  private toDomain(order: OrderModel): IOrder {
     return {
-      plates: ingredient.plates,
-      status: ingredient.status,
-      updated_at: ingredient.updated_at,
+      id: order.id,
+      plates: order.plates,
+      status: order.status,
+      updated_at: order.updated_at,
     };
   }
 }

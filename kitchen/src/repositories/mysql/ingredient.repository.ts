@@ -1,4 +1,4 @@
-import { IIngredientRepository } from '@/interfaces/ingredient.repository.interface';
+import { IIngredientRepository } from '@/repositories/mysql/interfaces/ingredient.repository.interface';
 import IngredientModel from '@/models/ingredient.model';
 import IIngredientModel from '@/models/interfaces/ingredient.interface';
 import { Transaction, WhereOptions } from 'sequelize';
