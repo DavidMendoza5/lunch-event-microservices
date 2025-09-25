@@ -29,6 +29,12 @@ export default class OrderModel extends Model<OrderModel, IOrderModel> {
   })
   status!: STATUS_ENUM;
 
+  @Column({
+    type: DataType.DATE,
+    allowNull: false,
+  })
+  updated_at!: Date;
+
   @HasMany(() => OrderDishModel, 'order_id')
   orders_dishes!: OrderDishModel[];
 }
