@@ -1,6 +1,10 @@
 import IOrderRecipeIngredientModel from '@/models/interfaces/order-recipe-ingredient.interface';
 import RabbitMQ from '../connection';
 import OrderRecipeIngredientModel from '@/models/order-recipe-ingredient.model';
+import IngredientModel from '@/models/ingredient.model';
+import { STATUS_ENUM } from '@/types/enums/status.enum';
+import { OrderUpdatedProducer } from '../producers/order-updated.producer';
+import UnitOfWork from '@utils/unit-of-work.util';
 
 export class OrderConsumer {
   private exchange = 'orders.direct';
@@ -29,6 +33,49 @@ export class OrderConsumer {
         console.log('🍽️ Warehouse received orders:', orders);
 
         await OrderRecipeIngredientModel.bulkCreate(orders);
+
+        for (const order of orders) {
+          const ingredient = await IngredientModel.findByPk(
+            order.ingredient_id,
+          );
+
+          if (!ingredient) {
+            console.error(`❌ Ingredient ${order.ingredient_id} not found`);
+            continue;
+          }
+
+          if (ingredient.stock >= order.qty) {
+            await UnitOfWork.execute(async (transaction) => {
+              await ingredient.update(
+                { stock: ingredient.stock - order.qty },
+                { transaction },
+              );
+              await OrderRecipeIngredientModel.update(
+                { status: STATUS_ENUM.done },
+                {
+                  where: {
+                    ingredient_id: order.ingredient_id,
+                    order_id: order.order_id,
+                    recipe_id: order.recipe_id,
+                  },
+                  transaction,
+                },
+              );
+            });
+
+            const producer = new OrderUpdatedProducer();
+            await producer.publish({
+              order_id: order.order_id,
+              recipe_id: order.recipe_id,
+              ingredient_id: order.ingredient_id,
+              status: STATUS_ENUM.done,
+            });
+          } else {
+            console.log(
+              `⚠️ Not enough stock for ingredient ${ingredient.name}`,
+            );
+          }
+        }
 
         channel.ack(msg);
       } catch (err) {
