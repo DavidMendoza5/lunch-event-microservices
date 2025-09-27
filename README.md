@@ -27,7 +27,12 @@ Manages the purchasing process for ingredients.
 **Entities:**
 - **Purchases**: Records of ingredient purchases.
 
+### 4 frontend
+Simple project made with Vue to send a number of plates to kitchen's service
+
 ## Running the Project
+
+You have to create a copy of each .env.example and .env.db with your credentials in each service main folder (kitchen, warehouse and market). Make sure ORIGIN variable in kitchen's .env is pointing to your frontend URL.
 
 It is recommended to use Docker Compose to run all services together.  
 To start the project, execute:
@@ -48,6 +53,13 @@ npm run seed
 Seeders order:
 1. Seeders in warehouse service.
 2. Seeders in kitchen service.
+
+Frontend:
+```bash
+npm install
+npm run dev
+```
+
 
 ## Testing the project
 In order to test all functionality, make the following request to kitchen's service:
