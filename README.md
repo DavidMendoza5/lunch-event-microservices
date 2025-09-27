@@ -49,6 +49,24 @@ Seeders order:
 1. Seeders in warehouse service.
 2. Seeders in kitchen service.
 
+## Testing the project
+In order to test all functionality, make the following request to kitchen's service:
+```bash
+curl --location 'http://localhost:3001/api/order' \
+--header 'Content-Type: application/json' \
+--data '{
+    "plates": 4
+}'
+```
+
+The attribute plates indicates the number of random dishes that will be created.
+
+Once you send the request, an order is created in the orders table. This order triggers the creation of the specified number of dishes randomly. This process sends an event to the warehouse service, where entries are created in the order_recipe_ingredient table, and the warehouse service begins to allocate stock for each dish in the order.
+
+If additional stock is required, a market event is triggered to purchase more of the needed ingredient for that recipe. Once the required quantity of the ingredient is available, a warehouse event checks if all ingredients for the recipe are ready. If so, it updates the recipe's status and sends a kitchen event to update the dish's status.
+
+Once all dishes are ready, the order's status is updated to "done".
+
 ## Main Goal
 
 The main objective is to provide a scalable solution that can:
