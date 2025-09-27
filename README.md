@@ -27,7 +27,7 @@ Manages the purchasing process for ingredients.
 **Entities:**
 - **Purchases**: Records of ingredient purchases.
 
-### 4 frontend
+### 4 Frontend
 Simple project made with Vue to send a number of plates to kitchen's service
 
 ## Running the Project
@@ -41,13 +41,15 @@ To start the project, execute:
 docker-compose up
 ```
 
-Once project is running, you have to run migrations in each service with the following command:
+Once project is running, you have to run migrations in each service container with the following command:
 ```bash
+docker exec -it service_name sh
 npm run migration
 ```
 
-Once project is running, you have to run seeders in each service with the following command:
+Once project is running, you have to run seeders in each service container with the following command:
 ```bash
+docker exec -it service_name sh
 npm run seed
 ```
 Seeders order:
