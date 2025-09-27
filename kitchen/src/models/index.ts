@@ -25,7 +25,7 @@ const sequelizeConfig = new Sequelize(
       RecipeIngredientModel,
       OrderDishModel,
     ],
-    logging: false,
+    logging: true,
     pool: {
       max: 90,
       min: 2,

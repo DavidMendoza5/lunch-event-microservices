@@ -57,4 +57,10 @@ export default class OrderRecipeIngredientModel extends Model<
     allowNull: false,
   })
   status!: STATUS_ENUM;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  qty!: number;
 }
