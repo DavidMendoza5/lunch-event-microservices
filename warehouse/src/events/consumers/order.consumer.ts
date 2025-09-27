@@ -5,6 +5,7 @@ import IngredientModel from '@/models/ingredient.model';
 import { STATUS_ENUM } from '@/types/enums/status.enum';
 import { OrderUpdatedProducer } from '../producers/order-updated.producer';
 import UnitOfWork from '@utils/unit-of-work.util';
+import { IngredientBuyProducer } from '../producers/ingredient-purchase.producer';
 
 export class OrderConsumer {
   private exchange = 'orders.direct';
@@ -74,6 +75,15 @@ export class OrderConsumer {
             console.log(
               `⚠️ Not enough stock for ingredient ${ingredient.name}`,
             );
+
+            const ingredientBuyProducer = new IngredientBuyProducer();
+            ingredientBuyProducer.publish({
+              order_id: order.order_id,
+              recipe_id: order.recipe_id,
+              ingredient_id: order.ingredient_id,
+              ingredient_name: ingredient.name,
+              qty: order.qty,
+            });
           }
         }
 

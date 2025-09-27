@@ -37,7 +37,9 @@ export class OrderUpdatedConsumer {
             transaction,
           });
 
-          const allDone = dishes.every((d) => d.status === STATUS_ENUM.done);
+          const allDone = dishes.every(
+            (d) => Number(d.status) === STATUS_ENUM.done,
+          );
 
           const newStatus = allDone ? STATUS_ENUM.done : STATUS_ENUM.preparing;
 
