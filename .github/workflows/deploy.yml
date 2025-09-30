@@ -35,21 +35,21 @@ jobs:
             chmod 600 ~/.ssh/id_rsa
 
             echo "Copying files..."
-            scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -rv docker-compose.yml kitchen/* warehouse/* market/* $USERNAME@$HOST:$DEST_PATH/
+            scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -rv docker-compose.yml kitchen/* warehouse/* market/* ${{ secrets.INSTANCE_USERNAME }}@${{ secrets.INSTANCE_HOST }}:${{ secrets.INSTANCE_DEST_PATH }}/
 
-            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $USERNAME@$HOST "
-              cd $DEST_PATH
+            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.INSTANCE_USERNAME }}@${{ secrets.INSTANCE_HOST }} "
+              cd ${{ secrets.INSTANCE_DEST_PATH }}
               # kitchen
-              echo "${{ secrets.KITCHEN_ENV }}" > $DEST_PATH/kitchen/.env
-              echo "${{ secrets.KITCHEN_ENV_DB }}" > $DEST_PATH/kitchen/.env.db
+              echo "${{ secrets.KITCHEN_ENV }}" > ${{ secrets.INSTANCE_DEST_PATH }}/kitchen/.env
+              echo "${{ secrets.KITCHEN_ENV_DB }}" > ${{ secrets.INSTANCE_DEST_PATH }}/kitchen/.env.db
 
               # warehouse
-              echo "${{ secrets.WAREHOUSE_ENV }}" > $DEST_PATH/warehouse/.env
-              echo "${{ secrets.WAREHOUSE_ENV_DB }}" > $DEST_PATH/warehouse/.env.db
+              echo "${{ secrets.WAREHOUSE_ENV }}" > ${{ secrets.INSTANCE_DEST_PATH }}/warehouse/.env
+              echo "${{ secrets.WAREHOUSE_ENV_DB }}" > ${{ secrets.INSTANCE_DEST_PATH }}/warehouse/.env.db
 
               # market
-              echo "${{ secrets.MARKET_ENV }}" > $DEST_PATH/market/.env
-              echo "${{ secrets.MARKET_ENV_DB }}" > $DEST_PATH/market/.env.db
+              echo "${{ secrets.MARKET_ENV }}" > ${{ secrets.INSTANCE_DEST_PATH }}/market/.env
+              echo "${{ secrets.MARKET_ENV_DB }}" > ${{ secrets.INSTANCE_DEST_PATH }}/market/.env.db
 
               docker-compose down
               docker-compose build --no-cache
