@@ -10,6 +10,7 @@ on:
       - 'market/**'
       - 'docker-compose.yml'
       - '!frontend/**'
+  workflow_dispatch:
 
 jobs:
   deploy:
