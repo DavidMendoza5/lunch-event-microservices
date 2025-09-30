@@ -32,7 +32,7 @@ Simple project made with Vue to send a number of plates to kitchen's service
 
 ## Running the Project
 
-You have to create a copy of each .env.example and .env.db with your credentials in each service main folder (kitchen, warehouse and market). Make sure ORIGIN variable in kitchen's .env is pointing to your frontend URL.
+You have to create a copy of each .env.example and .env.db with your credentials in each service main folder (frontend, kitchen, warehouse and market). Make sure ORIGIN variable in kitchen's .env is pointing to your frontend URL and VITE_KITCHEN_API_BASE_URL variable in frontend project is pointing to kitchen's service URL.
 
 It is recommended to use Docker Compose to run all services together.  
 To start the project, execute:
