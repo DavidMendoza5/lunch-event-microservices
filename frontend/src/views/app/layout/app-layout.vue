@@ -6,6 +6,7 @@ import InputNumber from 'primevue/inputnumber';
 import Message from 'primevue/message';
 import { ref, reactive, computed } from 'vue';
 import { useToast } from "primevue/usetoast"
+import { kitchenService } from '@/core/config';
 
 const toast = useToast();
 
@@ -49,7 +50,7 @@ const submitForm = async () => {
       plates: Number(form.plates)
     };
 
-    const response = await fetch('http://localhost:3001/api/order', {
+    const response = await fetch(`${kitchenService.API_BASE}/api/order`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -127,7 +128,7 @@ const submitForm = async () => {
               type="submit" 
               label="Generate Order" 
               :disabled="hasError || form.plates === null"
-              class="w-full"
+              class="w-full sumit-order-btn"
               icon="pi pi-send"
             />
           </form>
@@ -136,43 +137,3 @@ const submitForm = async () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.field {
-  margin-bottom: 1.5rem;
-}
-
-:deep(.p-inputnumber) {
-  width: 100%;
-}
-
-:deep(.p-inputnumber-input) {
-  width: 100%;
-  padding: 0.75rem;
-}
-
-:deep(.p-inputnumber-button) {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-}
-
-:deep(.p-inputnumber-button:hover) {
-  background-color: var(--primary-dark-color);
-}
-
-:deep(.p-message) {
-  margin-top: 0.25rem;
-}
-
-.viewer-container {
-  padding: 2rem;
-}
-
-section {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-</style>
