@@ -39,6 +39,18 @@ jobs:
 
             ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $USERNAME@$HOST "
               cd $DEST_PATH
+              # kitchen
+              echo "${{ secrets.KITCHEN_ENV }}" > $DEST_PATH/kitchen/.env
+              echo "${{ secrets.KITCHEN_ENV_DB }}" > $DEST_PATH/kitchen/.env.db
+
+              # warehouse
+              echo "${{ secrets.WAREHOUSE_ENV }}" > $DEST_PATH/warehouse/.env
+              echo "${{ secrets.WAREHOUSE_ENV_DB }}" > $DEST_PATH/warehouse/.env.db
+
+              # market
+              echo "${{ secrets.MARKET_ENV }}" > $DEST_PATH/market/.env
+              echo "${{ secrets.MARKET_ENV_DB }}" > $DEST_PATH/market/.env.db
+              
               docker-compose down
               docker-compose build --no-cache
               docker-compose up -d
