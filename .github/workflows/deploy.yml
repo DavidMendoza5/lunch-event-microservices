@@ -1,0 +1,57 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'kitchen/**'
+      - 'warehouse/**'
+      - 'market/**'
+      - 'docker-compose.yml'
+      - '!frontend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.19.0'
+
+      - name: Deploy to DigitalOcean Droplet
+        env:
+            HOST: ${{ secrets.INSTANCE_HOST }}
+            USERNAME: ${{ secrets.INSTANCE_USERNAME }}
+            KEY: ${{ secrets.INSTANCE_SSH_KEY }}
+            DEST_PATH: ${{ secrets.INSTANCE_DEST_PATH }}
+        run: |
+            mkdir -p ~/.ssh
+            echo "${KEY}" > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+
+            echo "Copying files..."
+            scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -rv docker-compose.yml kitchen/* warehouse/* market/* $USERNAME@$HOST:$DEST_PATH/
+
+            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $USERNAME@$HOST "
+              cd $DEST_PATH
+              # kitchen
+              echo "${{ secrets.KITCHEN_ENV }}" > $DEST_PATH/kitchen/.env
+              echo "${{ secrets.KITCHEN_ENV_DB }}" > $DEST_PATH/kitchen/.env.db
+
+              # warehouse
+              echo "${{ secrets.WAREHOUSE_ENV }}" > $DEST_PATH/warehouse/.env
+              echo "${{ secrets.WAREHOUSE_ENV_DB }}" > $DEST_PATH/warehouse/.env.db
+
+              # market
+              echo "${{ secrets.MARKET_ENV }}" > $DEST_PATH/market/.env
+              echo "${{ secrets.MARKET_ENV_DB }}" > $DEST_PATH/market/.env.db
+              
+              docker-compose down
+              docker-compose build --no-cache
+              docker-compose up -d
+            "
