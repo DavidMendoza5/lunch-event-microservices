@@ -50,7 +50,7 @@ jobs:
               # market
               echo "${{ secrets.MARKET_ENV }}" > $DEST_PATH/market/.env
               echo "${{ secrets.MARKET_ENV_DB }}" > $DEST_PATH/market/.env.db
-              
+
               docker-compose down
               docker-compose build --no-cache
               docker-compose up -d
