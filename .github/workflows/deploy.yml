@@ -26,33 +26,40 @@ jobs:
 
       - name: Deploy to DigitalOcean Droplet
         env:
-            HOST: ${{ secrets.INSTANCE_HOST }}
-            USERNAME: ${{ secrets.INSTANCE_USERNAME }}
-            KEY: ${{ secrets.INSTANCE_SSH_KEY }}
-            DEST_PATH: ${{ secrets.INSTANCE_DEST_PATH }}
+          HOST: ${{ secrets.INSTANCE_HOST }}
+          USERNAME: ${{ secrets.INSTANCE_USERNAME }}
+          KEY: ${{ secrets.INSTANCE_SSH_KEY }}
+          DEST_PATH: ${{ secrets.INSTANCE_DEST_PATH }}
+          KITCHEN_ENV: ${{ secrets.KITCHEN_ENV }}
+          KITCHEN_ENV_DB: ${{ secrets.KITCHEN_ENV_DB }}
+          WAREHOUSE_ENV: ${{ secrets.WAREHOUSE_ENV }}
+          WAREHOUSE_ENV_DB: ${{ secrets.WAREHOUSE_ENV_DB }}
+          MARKET_ENV: ${{ secrets.MARKET_ENV }}
+          MARKET_ENV_DB: ${{ secrets.MARKET_ENV_DB }}
         run: |
-            mkdir -p ~/.ssh
-            echo "${KEY}" > ~/.ssh/id_rsa
-            chmod 600 ~/.ssh/id_rsa
+          mkdir -p ~/.ssh
+          echo "$KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-            echo "Copying files..."
-            scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -rv docker-compose.yml kitchen/* warehouse/* market/* ${{ secrets.INSTANCE_USERNAME }}@${{ secrets.INSTANCE_HOST }}:${{ secrets.INSTANCE_DEST_PATH }}/
+          echo "Copying files..."
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -rv docker-compose.yml kitchen/* warehouse/* market/* $USERNAME@$HOST:$DEST_PATH/
 
-            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.INSTANCE_USERNAME }}@${{ secrets.INSTANCE_HOST }} "
-              cd ${{ secrets.INSTANCE_DEST_PATH }}
-              # kitchen
-              echo "${{ secrets.KITCHEN_ENV }}" > ${{ secrets.INSTANCE_DEST_PATH }}/kitchen/.env
-              echo "${{ secrets.KITCHEN_ENV_DB }}" > ${{ secrets.INSTANCE_DEST_PATH }}/kitchen/.env.db
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $USERNAME@$HOST "
+            cd $DEST_PATH
+            # kitchen
+            echo \"$KITCHEN_ENV\" > $DEST_PATH/kitchen/.env
+            echo \"$KITCHEN_ENV_DB\" > $DEST_PATH/kitchen/.env.db
 
-              # warehouse
-              echo "${{ secrets.WAREHOUSE_ENV }}" > ${{ secrets.INSTANCE_DEST_PATH }}/warehouse/.env
-              echo "${{ secrets.WAREHOUSE_ENV_DB }}" > ${{ secrets.INSTANCE_DEST_PATH }}/warehouse/.env.db
+            # warehouse
+            echo \"$WAREHOUSE_ENV\" > $DEST_PATH/warehouse/.env
+            echo \"$WAREHOUSE_ENV_DB\" > $DEST_PATH/warehouse/.env.db
 
-              # market
-              echo "${{ secrets.MARKET_ENV }}" > ${{ secrets.INSTANCE_DEST_PATH }}/market/.env
-              echo "${{ secrets.MARKET_ENV_DB }}" > ${{ secrets.INSTANCE_DEST_PATH }}/market/.env.db
+            # market
+            echo \"$MARKET_ENV\" > $DEST_PATH/market/.env
+            echo \"$MARKET_ENV_DB\" > $DEST_PATH/market/.env.db
 
-              docker-compose down
-              docker-compose build --no-cache
-              docker-compose up -d
-            "
+            docker-compose down
+            docker-compose build --no-cache
+            docker-compose up -d
+          "
+
