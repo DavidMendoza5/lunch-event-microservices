@@ -1,9 +1,11 @@
 import { Router, Request, Response } from 'express';
 import OrderRouter from './order.route';
+import RecipeRouter from './recipe.route';
 
 const router: Router = Router();
 
-router.use('/order', OrderRouter);
+router.use('/orders', OrderRouter);
+router.use('/recipes', RecipeRouter);
 router.get('/', (req: Request, res: Response) => {
   res.status(200).json({
     status: 'ok',
