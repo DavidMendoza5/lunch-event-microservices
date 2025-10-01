@@ -1,22 +1,22 @@
 .main-home-container {
-    width: 100%;
+  width: 100%;
 }
 
 .section-container {
-    display: flex;
-    justify-content: left;
-    flex-wrap: wrap;
-    height: 100%;
+  display: flex;
+  justify-content: left;
+  flex-wrap: wrap;
+  height: 100%;
 }
 
 .field {
-    display: flex;
-    gap: 2%;
-    align-items: center;
-    margin-top: 2%;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 2%;
+  align-items: center;
+  margin-top: 2%;
+  flex-wrap: wrap;
 }
 
 .sumit-order-btn {
-    margin-top: 3%;
+  margin-top: 3%;
 }

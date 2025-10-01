@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import './app-layout.css'
-import Header from '@/components/header/header.vue';
-import Menu from '@/components/menu/menu.vue';
+import Header from '@/components/header/header.vue'
+import Menu from '@/components/menu/menu.vue'
 </script>
 
 <template>

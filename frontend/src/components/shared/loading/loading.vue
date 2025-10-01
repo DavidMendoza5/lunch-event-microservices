@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import './loading.css'
 const props = defineProps<{
-  centered?: boolean;
-}>();
+  centered?: boolean
+}>()
 </script>
 <template>
-  <div class="loader" :class="{ 'loader-centered': props.centered }">
-  </div>
+  <div class="loader" :class="{ 'loader-centered': props.centered }"></div>
 </template>

@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,15 +9,15 @@ const router = createRouter({
       component: () => import('../views/app/layout/app-layout.vue'),
       redirect: 'home',
       meta: { requiresAuth: true },
-      children: [    
+      children: [
         {
           path: 'home',
           name: 'home',
           component: () => import('../views/app/home/home.vue'),
         },
-      ]
+      ],
     },
   ],
-});
+})
 
-export default router;
+export default router
