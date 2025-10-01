@@ -7,10 +7,10 @@ services:
       - "15672:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      start_period: 15s
+      start_period: 30s
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
     networks:
     - microservices_breakfast_network
   
@@ -46,10 +46,10 @@ services:
     env_file: ./kitchen/.env.db
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      start_period: 20s
+      start_period: 30s
       interval: 10s
       timeout: 10s
-      retries: 5
+      retries: 10
     networks:
       - microservices_breakfast_network
   
@@ -85,10 +85,10 @@ services:
     env_file: ./warehouse/.env.db
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      start_period: 20s
+      start_period: 30s
       interval: 10s
       timeout: 10s
-      retries: 5
+      retries: 10
     networks:
       - microservices_breakfast_network
   
@@ -124,10 +124,10 @@ services:
     env_file: ./market/.env.db
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      start_period: 20s
+      start_period: 30s
       interval: 10s
       timeout: 10s
-      retries: 5
+      retries: 10
     networks:
       - microservices_breakfast_network
 networks:
