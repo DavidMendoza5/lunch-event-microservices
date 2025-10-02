@@ -7,7 +7,7 @@ import { IngredientPurchaseProducer } from '../producers/ingredient-purchase.pro
 export class IngredientPurchaseConsumer {
   private exchange = 'market.direct';
   private queue = 'market_purchase_queue';
-  private routingKey = 'market.request.purchase';
+  private routingKey = 'market.request.purchase.update';
 
   async consume() {
     const rabbit = await RabbitMQ.getInstance();

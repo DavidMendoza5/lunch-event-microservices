@@ -16,26 +16,31 @@ const form = reactive({
 
 const isTouched = ref(false)
 const loading = ref(false)
-
-const hasError = computed(() => {
-  return isTouched.value && (form.plates === null || form.plates < 1 || form.plates > 10)
-})
-
-const errorMessage = computed(() => {
-  if (form.plates === null) return 'Number of plates is required'
-  if (form.plates < 1) return 'Number must be at least 1'
-  if (form.plates > 10) return 'Number cannot exceed 10'
-  return ''
-})
+const hasError = ref(false)
+const errorMessage = ref('')
 
 const validatePlates = () => {
   isTouched.value = true
   return !hasError.value
 }
 
+const handleInput = (event: any) => {
+  const value = event.value
+
+  if (value === null || value === undefined) {
+    hasError.value = true
+    errorMessage.value = 'Este campo es requerido'
+  } else if (value < 1 || value > 10) {
+    hasError.value = true
+    errorMessage.value = 'El valor debe estar entre 1 y 10'
+  } else {
+    hasError.value = false
+    errorMessage.value = ''
+  }
+}
+
 const submitForm = async () => {
   loading.value = true
-  validatePlates()
 
   if (hasError.value) {
     toast.add({
@@ -99,23 +104,19 @@ const submitForm = async () => {
       <form @submit.prevent="submitForm">
         <div class="field">
           <label for="plates" class="block text-900 font-medium">Número de platos:</label>
-
-          <InputNumber
-            v-model="form.plates"
-            inputId="plates"
-            mode="decimal"
-            :min="1"
-            :max="10"
-            showButtons
-            :step="1"
-            placeholder="Ingresa un valor entre 1 y 10"
-            :class="{ 'p-invalid': hasError }"
-            @blur="validatePlates"
-          />
-
-          <Message v-if="hasError" severity="error" size="small" class="mt-1">
-            {{ errorMessage }}
-          </Message>
+          <div class="flex flex-col gap-1">
+            <InputNumber
+              v-model="form.plates"
+              inputId="plates"
+              mode="decimal"
+              placeholder="Ingresa un valor entre 1 y 10"
+              @blur="validatePlates"
+              @input="handleInput"
+            />
+            <Message v-if="hasError" severity="error" size="small" class="mt-1">
+              {{ errorMessage }}
+            </Message>
+          </div>
         </div>
 
         <Button

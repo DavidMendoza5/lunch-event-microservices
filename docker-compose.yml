@@ -7,9 +7,9 @@ services:
       - "15672:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      start_period: 60s
-      interval: 10s
-      timeout: 10s
+      start_period: 1m20s
+      interval: 20s
+      timeout: 30s
       retries: 10
     networks:
     - microservices_breakfast_network

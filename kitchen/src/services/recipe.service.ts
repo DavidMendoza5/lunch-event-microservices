@@ -10,8 +10,13 @@ export class RecipeService {
 
   async getRecipes(transaction?: Transaction): Promise<IRecipe[] | null> {
     try {
-      return await this.recipeRepository.findWithIngredients({}, transaction);
+      return await this.recipeRepository.findWithIngredients(
+        {},
+        transaction,
+        true,
+      );
     } catch (error) {
+      console.error('Error fetching recipes:', error);
       throw new AppError('Error fetching recipes', 400);
     }
   }

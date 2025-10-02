@@ -5,25 +5,36 @@ import { Transaction, WhereOptions } from 'sequelize';
 import { Service } from 'typedi';
 import RecipeIngredientModel from '@/models/recipe-ingredient.model';
 import IRecipe from '@/interfaces/recipe.interface';
+import IngredientModel from '@/models/ingredient.model';
 
 @Service()
 export class RecipeRepository implements IRecipeRepository {
   async findWithIngredients(
     filters: WhereOptions,
     transaction?: Transaction,
+    withAll?: boolean,
   ): Promise<IRecipe[] | null> {
     const recipes = await RecipeModel.findAll({
       where: filters,
       include: [
         {
           model: RecipeIngredientModel,
-          attributes: ['id', 'ingredient_id', 'recipe_id', 'qty'],
           as: 'recipe_ingredients',
+          attributes: ['id', 'ingredient_id', 'recipe_id', 'qty'],
+          include: withAll
+            ? [
+                {
+                  model: IngredientModel,
+                  as: 'ingredient',
+                  attributes: ['id', 'name'],
+                },
+              ]
+            : [],
         },
       ],
       transaction,
     });
-    return recipes.map((recipe) => this.toDomain(recipe));
+    return recipes.map((recipe) => this.toDomainWithRelations(recipe));
   }
   async findByFilter(
     filters: WhereOptions,
@@ -41,7 +52,16 @@ export class RecipeRepository implements IRecipeRepository {
   ): Promise<IRecipe> {
     return await RecipeModel.create(recipe, { transaction });
   }
+
   private toDomain(recipe: RecipeModel): IRecipe {
+    return {
+      id: recipe.id,
+      name: recipe.name,
+      updated_at: recipe.updated_at,
+    };
+  }
+
+  private toDomainWithRelations(recipe: RecipeModel): IRecipe {
     return {
       id: recipe.id,
       name: recipe.name,
@@ -52,6 +72,7 @@ export class RecipeRepository implements IRecipeRepository {
             ingredient_id: ri.ingredient_id,
             recipe_id: ri.recipe_id,
             qty: ri.qty,
+            ingredient_name: ri.ingredient ? ri.ingredient.name : undefined,
           }))
         : undefined,
     };

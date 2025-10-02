@@ -60,8 +60,9 @@ jobs:
             echo \"$MARKET_ENV\" > $DEST_PATH/market/.env
             echo \"$MARKET_ENV_DB\" > $DEST_PATH/market/.env.db
 
-            docker-compose down
-            docker-compose build --no-cache
+            docker-compose build --pull
             docker-compose up -d
+            docker image prune -f
+            docker builder prune -a -f
           "
 
