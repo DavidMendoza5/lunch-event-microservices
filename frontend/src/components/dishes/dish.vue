@@ -8,6 +8,8 @@ import { kitchenService } from '@/core/config'
 
 const dishes = ref<Dish[]>([])
 const loading = ref(false)
+const expandedRows = ref({})
+
 const toast = useToast()
 
 onMounted(async () => {
@@ -40,9 +42,30 @@ const getDishes = async () => {
   <Toast />
 
   <div class="card">
-    <DataTable :loading="loading" :value="dishes" tableStyle="min-width: 15rem" dataKey="id">
+    <DataTable
+      v-model:expandedRows="expandedRows"
+      :loading="loading"
+      :value="dishes"
+      tableStyle="min-width: 15rem"
+      dataKey="id"
+    >
+      <template #header>
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h3 class="text-xl font-bold">Recetas</h3>
+        </div>
+      </template>
+      <Column expander style="width: 5rem" />
       <Column field="id" header="ID"></Column>
       <Column field="name" header="Name"></Column>
+      <template #expansion="slotProps">
+        <div class="p-4">
+          <h4>Ingredientes para {{ slotProps.data.name }}</h4>
+          <DataTable :value="slotProps.data.recipe_ingredients">
+            <Column field="ingredient_name" header="Ingrediente"></Column>
+            <Column field="qty" header="Cantidad"></Column>
+          </DataTable>
+        </div>
+      </template>
     </DataTable>
   </div>
 </template>

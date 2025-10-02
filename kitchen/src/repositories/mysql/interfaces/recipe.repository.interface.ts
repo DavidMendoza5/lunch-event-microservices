@@ -7,6 +7,7 @@ export interface IRecipeRepository extends IBaseRepository<IRecipeModel> {
   findByFilter(
     filters: WhereOptions,
     transaction?: Transaction,
+    withAll?: boolean,
   ): Promise<IRecipe[] | null>;
   save(recipe: IRecipeModel, transactions?: Transaction): Promise<IRecipe>;
   findWithIngredients(

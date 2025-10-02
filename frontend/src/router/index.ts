@@ -5,10 +5,9 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'dashboard',
+      name: 'main',
       component: () => import('../views/app/layout/app-layout.vue'),
       redirect: 'home',
-      meta: { requiresAuth: true },
       children: [
         {
           path: 'home',
