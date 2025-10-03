@@ -43,7 +43,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
           echo "Copying files..."
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -rv docker-compose.yml $USERNAME@$HOST:$DEST_PATH/
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -rv docker-compose.yml docker-compose.prod.yml $USERNAME@$HOST:$DEST_PATH/
           scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -r kitchen warehouse market $USERNAME@$HOST:$DEST_PATH/
 
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $USERNAME@$HOST "
