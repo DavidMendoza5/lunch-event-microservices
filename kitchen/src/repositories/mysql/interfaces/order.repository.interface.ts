@@ -1,13 +1,17 @@
 import IOrderModel from '@/models/interfaces/order.interface';
-import { Transaction, WhereOptions } from 'sequelize';
+import { GroupOption, Transaction, WhereOptions } from 'sequelize';
 import { IBaseRepository } from './base.repository.interface';
-import IOrder from '@/interfaces/order-response.interface';
+import IGetOrder from '@/interfaces/get-order.interface';
 
 export interface IOrderRepository extends IBaseRepository<IOrderModel> {
-  findByFilter(
+  bulkCreate(order: IOrderModel[], transaction?: Transaction): Promise<void>;
+  count(where: WhereOptions, transaction?: Transaction): Promise<number>;
+  findWithRelations(
     filters: WhereOptions,
     transaction?: Transaction,
-  ): Promise<IOrder[] | null>;
-  save(order: IOrderModel, transaction?: Transaction): Promise<IOrder>;
-  bulkCreate(order: IOrderModel[], transaction?: Transaction): Promise<void>;
+    groupedBy?: GroupOption,
+    orderBy?: [string, string][],
+    limit?: number,
+    offset?: number,
+  ): Promise<IGetOrder[] | null>;
 }

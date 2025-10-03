@@ -3,136 +3,98 @@ services:
   api_rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - "5673:5672"
+      - "5672:5672"
       - "15672:15672"
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      start_period: 1m20s
-      interval: 20s
-      timeout: 30s
-      retries: 10
     networks:
-    - microservices_breakfast_network
+      - microservices_breakfast_network
   
   kitchen:
     container_name: kitchen_service
     build:
       context: ./kitchen
       dockerfile: Dockerfile
-      target: dev
-    restart: unless-stopped
+      target: prod
+    restart: always
     env_file: ./kitchen/.env
     ports:
       - "3001:3001"
-    volumes:
-      - ./kitchen:/app
-      - /app/node_modules
     depends_on:
-      kitchen_db:
-        condition: service_healthy
-      api_rabbitmq:
-        condition: service_healthy
-    command: npm run dev
+      - kitchen_db
+      - api_rabbitmq
+    command: npm start
     networks:
       - microservices_breakfast_network
   
   kitchen_db:
     image: mysql:9.4-oraclelinux9
     container_name: kitchen_db_container
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./kitchen/mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
     env_file: ./kitchen/.env.db
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      start_period: 60s
-      interval: 10s
-      timeout: 10s
-      retries: 10
     networks:
       - microservices_breakfast_network
-  
+
   warehouse:
     container_name: warehouse_service
     build:
       context: ./warehouse
       dockerfile: Dockerfile
-      target: dev
-    restart: unless-stopped
+      target: prod
+    restart: always
     env_file: ./warehouse/.env
     ports:
       - "3002:3002"
-    volumes:
-      - ./warehouse:/app
-      - /app/node_modules
     depends_on:
-      warehouse_db:
-        condition: service_healthy
-      api_rabbitmq:
-        condition: service_healthy
-    command: npm run dev
+      - warehouse_db
+      - api_rabbitmq
+    command: npm start
     networks:
       - microservices_breakfast_network
-  
+
   warehouse_db:
     image: mysql:9.4-oraclelinux9
     container_name: warehouse_db_container
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./warehouse/mysql_data:/var/lib/mysql
     ports:
       - "3307:3306"
     env_file: ./warehouse/.env.db
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      start_period: 60s
-      interval: 10s
-      timeout: 10s
-      retries: 10
     networks:
       - microservices_breakfast_network
-  
+
   market:
     container_name: market_service
     build:
       context: ./market
       dockerfile: Dockerfile
-      target: dev
-    restart: unless-stopped
+      target: prod
+    restart: always
     env_file: ./market/.env
     ports:
       - "3003:3003"
-    volumes:
-      - ./market:/app
-      - /app/node_modules
     depends_on:
-      market_db:
-        condition: service_healthy
-      api_rabbitmq:
-        condition: service_healthy
-    command: npm run dev
+      - market_db
+      - api_rabbitmq
+    command: npm start
     networks:
       - microservices_breakfast_network
-  
+
   market_db:
     image: mysql:9.4-oraclelinux9
     container_name: market_db_container
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./market/mysql_data:/var/lib/mysql
     ports:
       - "3308:3306"
     env_file: ./market/.env.db
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      start_period: 60s
-      interval: 10s
-      timeout: 10s
-      retries: 10
     networks:
       - microservices_breakfast_network
+
 networks:
   microservices_breakfast_network:
     driver: bridge
