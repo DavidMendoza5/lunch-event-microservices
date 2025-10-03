@@ -5,6 +5,10 @@ import { IApiResponse } from '@/interfaces/api-response.interface';
 import IOrderModel from '@/models/interfaces/order.interface';
 import UnitOfWork from '@utils/unit-of-work.util';
 import { STATUS_ENUM } from '@/types/enums/order-status.enum';
+import { IPaginatedOrderFilters } from '@/interfaces/order-filters.interface';
+import { IApiPaginatedResponse } from '@/interfaces/api-paginated-response.interface';
+import { IDataWithPagination } from '@/interfaces/get-paginated-data.interface';
+import IGetOrder from '@/interfaces/get-order.interface';
 
 @Service()
 export class OrderController {
@@ -35,6 +39,45 @@ export class OrderController {
         data: order,
       };
       res.status(201).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async getOrdersWithRecipes(
+    req: Request<{}, {}, {}, IPaginatedOrderFilters>,
+    res: Response<IApiPaginatedResponse<IGetOrder>>,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const queryParams = req.query;
+      const limit = queryParams.limit;
+      let ordersInformation: IDataWithPagination<IGetOrder> = {
+        data: [],
+        totalData: 0,
+        totalPages: 0,
+      };
+
+      await UnitOfWork.execute(async (transaction) => {
+        ordersInformation = await this.orderService.getOrdersWithRecipes(
+          queryParams,
+          transaction,
+        );
+      });
+
+      const response: IApiPaginatedResponse<IGetOrder> = {
+        success: true,
+        message: 'Orders retrieved successfully',
+        data: ordersInformation.data,
+        pagination: {
+          currentPage: Number(queryParams.pageNumber) || 1,
+          totalPages: ordersInformation.totalPages,
+          totalItems: ordersInformation.totalData,
+          itemsPerPage: Number(limit),
+        },
+      };
+
+      res.status(200).json(response);
     } catch (error) {
       next(error);
     }

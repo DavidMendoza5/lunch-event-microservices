@@ -6,10 +6,15 @@ import { OrderRepository } from '@/repositories/mysql/order.repository';
 import { RecipeRepository } from '@/repositories/mysql/recipe.repository';
 import { STATUS_ENUM } from '@/types/enums/order-status.enum';
 import { AppError } from '@/utils/error.util';
-import { Transaction } from 'sequelize';
+import { Transaction, WhereOptions } from 'sequelize';
 import { Service } from 'typedi';
 import RabbitMQ from '@/events/connection';
 import IOrderRecipeIngredient from '@/interfaces/order-recipe-ingredient.interface';
+import IOrder from '@/interfaces/order-response.interface';
+import { IPaginatedOrderFilters } from '@/interfaces/order-filters.interface';
+import serverConfig from '@/config/server';
+import { IDataWithPagination } from '@/interfaces/get-paginated-data.interface';
+import IGetOrder from '@/interfaces/get-order.interface';
 
 @Service()
 export class OrderService {
@@ -101,6 +106,95 @@ export class OrderService {
     } catch (error) {
       console.error(error);
       throw new AppError('Error creating an order', 400);
+    }
+  }
+
+  async getOrders(
+    filters: IPaginatedOrderFilters,
+    transaction?: Transaction,
+  ): Promise<IDataWithPagination<IOrder>> {
+    try {
+      const {
+        limit = serverConfig.paginationLimit,
+        pageNumber = 1,
+        sortBy,
+        sortOrder,
+      } = filters;
+      const offset = (pageNumber - 1) * limit;
+      const orderFilters: WhereOptions = {};
+
+      if (filters.id) orderFilters.id = filters.id;
+      if (filters.status) orderFilters.status = filters.status;
+      if (filters.updated_at) orderFilters.updated_at = filters.updated_at;
+
+      const totalOrders = await this.orderRepository.count(
+        orderFilters,
+        transaction,
+      );
+
+      const totalPages = Math.ceil(totalOrders / limit);
+
+      const orders = await this.orderRepository.findByFilter(
+        orderFilters,
+        transaction,
+        undefined,
+        [[sortBy || 'id', sortOrder || 'DESC']],
+        Number(limit),
+        offset,
+      );
+
+      return {
+        data: orders || [],
+        totalData: totalOrders,
+        totalPages,
+      };
+    } catch (error) {
+      throw new AppError('Error fetching orders', 400);
+    }
+  }
+
+  async getOrdersWithRecipes(
+    filters: IPaginatedOrderFilters,
+    transaction?: Transaction,
+  ): Promise<IDataWithPagination<IGetOrder>> {
+    try {
+      const {
+        limit = serverConfig.paginationLimit,
+        pageNumber = 1,
+        sortBy,
+        sortOrder,
+      } = filters;
+      const offset = (pageNumber - 1) * limit;
+      const orderFilters: WhereOptions = {};
+
+      if (filters.id) orderFilters.id = filters.id;
+      if (filters.status) orderFilters.status = filters.status;
+      if (filters.updated_at) orderFilters.updated_at = filters.updated_at;
+
+      const totalOrders = await this.orderRepository.count(
+        orderFilters,
+        transaction,
+      );
+
+      const totalPages = Math.ceil(totalOrders / limit);
+
+      const orders = await this.orderRepository.findWithRelations(
+        orderFilters,
+        transaction,
+        undefined,
+        [[sortBy || 'id', sortOrder || 'DESC']],
+        Number(limit),
+        offset,
+      );
+
+      return {
+        data: orders || [],
+        totalData: totalOrders,
+        totalPages,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new AppError('Error fetching orders', 400);
     }
   }
 }

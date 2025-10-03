@@ -1,4 +1,4 @@
-import { Transaction, WhereOptions } from 'sequelize';
+import { GroupOption, Transaction, WhereOptions } from 'sequelize';
 import { Service } from 'typedi';
 import OrderDishModel from '@/models/order-dishes.model';
 import IOrderDishModel from '@/models/interfaces/order-dishes.interface';
@@ -15,22 +15,33 @@ export class OrderDishRepository implements IOrderDishRepository {
       validate: true,
     });
   }
+
   async findByFilter(
     filters: WhereOptions,
     transaction?: Transaction,
+    groupedBy?: GroupOption,
+    orderBy?: [string, string][],
+    limit?: number,
+    offset?: number,
   ): Promise<IOrderDishModel[] | null> {
     const recipeIngredients = await OrderDishModel.findAll({
       where: filters,
       transaction,
+      group: groupedBy,
+      order: orderBy,
+      limit,
+      offset,
     });
     return recipeIngredients.map((value) => this.toDomain(value));
   }
+
   async save(
     data: IOrderDishModel,
     transaction?: Transaction,
   ): Promise<IOrderDishModel> {
     return await OrderDishModel.create(data, { transaction });
   }
+
   private toDomain(data: OrderDishModel): IOrderDishModel {
     return {
       order_id: data.order_id,
