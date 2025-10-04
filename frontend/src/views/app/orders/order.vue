@@ -54,7 +54,7 @@ const onPageChange = (event: any) => {
 </script>
 
 <template>
-  <p class="description">Historial de Órdenes</p>
+  <h2 class="text-2xl font-bold mb-4 description">Historial de Órdenes</h2>
   <OrderTable
     :orders="orders"
     :loading="loading"

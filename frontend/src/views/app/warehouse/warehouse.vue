@@ -3,6 +3,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { useToast } from 'primevue'
 import { onMounted, ref } from 'vue'
+import './warehouse.css'
 import { backendService } from '@/core/config'
 import type { IIngredientStock } from '@/core/interfaces/ingredient-stock.interface'
 
@@ -39,7 +40,7 @@ onMounted(async () => {
 </script>
 <template>
   <div>
-    <h2 class="text-2xl font-bold mb-4">Inventario de ingredientes</h2>
+    <h2 class="text-2xl font-bold mb-4 description">Inventario de ingredientes</h2>
     <Toast />
 
     <div class="card">

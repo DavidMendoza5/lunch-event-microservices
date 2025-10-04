@@ -37,8 +37,14 @@ You have to create a copy of each .env.example and .env.db with your credentials
 It is recommended to use Docker Compose to run all services together.  
 To start the project, execute:
 
+Development:
 ```bash
-docker-compose up
+docker-compose -f docker-compose.yml up
+```
+
+Production:
+```bash
+docker-compose -f docker-compose.prod.yml up
 ```
 
 Once project is running, you have to run migrations in each service container with the following command:

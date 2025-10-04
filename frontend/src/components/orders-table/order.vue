@@ -64,12 +64,7 @@ const getOrderStatus = (status: string) => {
           </DataTable>
         </div>
       </template>
-
-      <template #empty>
-        <tr class="center">
-          <td colspan="11">No data available</td>
-        </tr>
-      </template>
+      <template #empty> No se encontraron órdenes. </template>
     </DataTable>
 
     <div class="pagination-footer">
