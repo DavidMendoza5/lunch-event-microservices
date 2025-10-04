@@ -43,6 +43,11 @@ const getOrderStatus = (status: string) => {
       <Column expander style="width: 5rem" />
       <Column field="id" header="ID" style="width: 25%"></Column>
       <Column field="plates" header="No. Platillos" style="width: 25%"></Column>
+      <Column field="updated_at" header="Fecha de Actualización" style="width: 25%">
+        <template #body="slotProps">
+          {{ new Date(slotProps.data.updated_at).toLocaleString() }}
+        </template>
+      </Column>
       <Column field="status" header="Estado" style="width: 25%">
         <template #body="slotProps">
           <Tag :value="slotProps.data.status" :severity="getOrderStatus(slotProps.data.status)" />

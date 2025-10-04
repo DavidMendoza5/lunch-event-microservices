@@ -8,6 +8,7 @@ import './sale.css'
 import { backendService } from '@/core/config'
 import type { IPurchase } from '@/core/interfaces/purchase.interface'
 import type { IPagination } from '@/core/interfaces/pagination.interface'
+import type { IIngredientStock } from '@/core/interfaces/ingredient-stock.interface'
 
 const purchases = ref<IPurchase[]>([])
 const loading = ref(false)
@@ -23,16 +24,37 @@ const toast = useToast()
 const getSales = async () => {
   try {
     loading.value = true
-    const response = await fetch(
-      `${backendService.MARKET_API_BASE_URL}/api/purchases?limit=${pagination.value.itemsPerPage}&pageNumber=${pagination.value.currentPage}`,
+    const promises = []
+
+    promises.push(
+      fetch(
+        `${backendService.MARKET_API_BASE_URL}/api/purchases?limit=${pagination.value.itemsPerPage}&pageNumber=${pagination.value.currentPage}`,
+      ),
     )
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
+    promises.push(fetch(`${backendService.WAREHOUSE_API_BASE_URL}/api/ingredients`))
+
+    const resolvedPromises = await Promise.all(promises)
+
+    for (const res of resolvedPromises) {
+      if (!res.ok) {
+        throw new Error('Network response was not ok')
+      }
     }
-    const data = await response.json()
-    purchases.value = data.data
-    pagination.value.totalItems = Number(data.pagination.totalItems)
-    pagination.value.totalPages = Number(data.pagination.totalPages)
+
+    const purchasesData = await resolvedPromises[0].json()
+    const ingredientsData = await resolvedPromises[1].json()
+    const marketPurchases = purchasesData.data.map((purchase: IPurchase) => {
+      return {
+        ...purchase,
+        ingredient:
+          ingredientsData.data.find(
+            (ingredient: IIngredientStock) => ingredient.id === purchase.ingredient_id,
+          ).name || 'Unknown',
+      }
+    })
+    purchases.value = marketPurchases
+    pagination.value.totalItems = Number(purchasesData.pagination.totalItems)
+    pagination.value.totalPages = Number(purchasesData.pagination.totalPages)
   } catch (error) {
     console.error('Error fetching purchases:', error)
     toast.add({
@@ -70,8 +92,12 @@ const onPageChange = (event: any) => {
       >
         <Column field="id" header="ID"></Column>
         <Column field="qty" header="Cantidad"></Column>
-        <Column field="ingredient_id" header="Ingrediente"></Column>
-        <Column field="created_at" header="Fecha"></Column>
+        <Column field="ingredient" header="Ingrediente"></Column>
+        <Column field="created_at" header="Fecha">
+          <template #body="slotProps">
+            {{ new Date(slotProps.data.created_at).toLocaleString() }}
+          </template>
+        </Column>
         <template #empty> No se encontraron compras. </template>
       </DataTable>
       <div class="pagination-footer">
