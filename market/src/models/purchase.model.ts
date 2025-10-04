@@ -29,4 +29,11 @@ export default class PurchaseModel extends Model<
     allowNull: false,
   })
   qty!: number;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: false,
+    defaultValue: DataType.NOW,
+  })
+  created_at!: Date;
 }

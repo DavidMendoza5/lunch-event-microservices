@@ -181,7 +181,7 @@ const onPageChange = (event: any) => {
         <h4>Órdenes pendientes</h4>
         <OrderTable
           :orders="orders"
-          :loading="loading"
+          :loading="loadingOrders"
           :pagination="pagination"
           v-on:page-change="onPageChange"
         />

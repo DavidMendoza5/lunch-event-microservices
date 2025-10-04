@@ -51,7 +51,7 @@ const getDishes = async () => {
     >
       <template #header>
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <h3 class="text-xl font-bold">Recetas</h3>
+          <h3 class="text-xl font-bold">Platillos</h3>
         </div>
       </template>
       <Column expander style="width: 5rem" />
@@ -66,6 +66,7 @@ const getDishes = async () => {
           </DataTable>
         </div>
       </template>
+      <template #empty> No se encontraron platillos. </template>
     </DataTable>
   </div>
 </template>
