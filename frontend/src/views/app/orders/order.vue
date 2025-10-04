@@ -56,13 +56,13 @@ const onPageChange = (event: any) => {
 }
 
 const getOrderStatus = (status: string) => {
-  if(status === 'done') {
+  if (status === 'done') {
     return 'success'
   }
-  if(status === 'pending') {
+  if (status === 'pending') {
     return 'warn'
   }
-  if(status === 'preparing') {
+  if (status === 'preparing') {
     return 'info'
   }
   return 'contrast'
