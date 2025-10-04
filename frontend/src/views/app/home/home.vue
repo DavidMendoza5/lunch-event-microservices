@@ -3,10 +3,13 @@ import './home.css'
 import Button from 'primevue/button'
 import InputNumber from 'primevue/inputnumber'
 import Message from 'primevue/message'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { kitchenService } from '@/core/config'
 import Dish from '@/components/dishes/dish.vue'
+import OrderTable from '@/components/orders-table/order.vue'
+import type { IGetOrder } from '@/core/interfaces/get-order.interface'
+import type { IPagination } from '@/core/interfaces/pagination.interface'
 
 const toast = useToast()
 
@@ -18,6 +21,14 @@ const isTouched = ref(false)
 const loading = ref(false)
 const hasError = ref(false)
 const errorMessage = ref('')
+const loadingOrders = ref(false)
+const orders = ref<IGetOrder[]>([])
+const pagination = ref<IPagination>({
+  currentPage: 1,
+  itemsPerPage: 5,
+  totalItems: 0,
+  totalPages: 1,
+})
 
 const validatePlates = () => {
   isTouched.value = true
@@ -93,6 +104,41 @@ const submitForm = async () => {
     loading.value = false
   }
 }
+
+onMounted(async () => {
+  await getOrders()
+})
+
+const getOrders = async () => {
+  loadingOrders.value = true
+  try {
+    const response = await fetch(
+      `${kitchenService.API_BASE}/api/orders?limit=${pagination.value.itemsPerPage}&pageNumber=${pagination.value.currentPage}&status=pending`,
+    )
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+    const data = await response.json()
+    orders.value = data.data
+    pagination.value.totalItems = Number(data.pagination.totalItems)
+    pagination.value.totalPages = Number(data.pagination.totalPages)
+  } catch (error) {
+    console.error('Error fetching orders:', error)
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Failed to retrieve orders. Please try again.',
+      life: 3000,
+    })
+  } finally {
+    loadingOrders.value = false
+  }
+}
+
+const onPageChange = (event: any) => {
+  pagination.value.currentPage = event.page + 1
+  getOrders()
+}
 </script>
 
 <template>
@@ -130,6 +176,16 @@ const submitForm = async () => {
       </form>
 
       <Dish />
+
+      <div class="card card-component">
+        <h4>Órdenes pendientes</h4>
+        <OrderTable
+          :orders="orders"
+          :loading="loading"
+          :pagination="pagination"
+          v-on:page-change="onPageChange"
+        />
+      </div>
     </section>
   </div>
 </template>
