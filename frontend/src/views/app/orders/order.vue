@@ -3,6 +3,7 @@ import { useToast } from 'primevue/usetoast'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Paginator from 'primevue/paginator'
+import Tag from 'primevue/tag'
 import './order.css'
 import { kitchenService } from '@/core/config'
 import { onMounted, ref } from 'vue'
@@ -17,6 +18,7 @@ const pagination = ref({
   totalItems: 0,
   totalPages: 1,
 })
+const expandedRows = ref({})
 
 onMounted(async () => {
   await getOrders()
@@ -35,9 +37,6 @@ const getOrders = async () => {
     orders.value = data.data
     pagination.value.totalItems = Number(data.pagination.totalItems)
     pagination.value.totalPages = Number(data.pagination.totalPages)
-    // pagination.value.currentPage = data.pagination.currentPage
-    // pagination.value.itemsPerPage = data.pagination.itemsPerPage
-    console.log(data)
   } catch (error) {
     console.error('Error fetching orders:', error)
     toast.add({
@@ -55,14 +54,54 @@ const onPageChange = (event: any) => {
   pagination.value.currentPage = event.page + 1
   getOrders()
 }
+
+const getOrderStatus = (status: string) => {
+  if (status === 'done') {
+    return 'success'
+  }
+  if (status === 'pending') {
+    return 'warn'
+  }
+  if (status === 'preparing') {
+    return 'info'
+  }
+  return 'contrast'
+}
 </script>
 
 <template>
   <div class="card">
-    <DataTable :value="orders" :loading="loading" tableStyle="min-width: 50rem">
+    <DataTable
+      :value="orders"
+      :loading="loading"
+      tableStyle="min-width: 50rem"
+      v-model:expandedRows="expandedRows"
+      dataKey="id"
+    >
+      <Column expander style="width: 5rem" />
       <Column field="id" header="ID" style="width: 25%"></Column>
       <Column field="plates" header="No. Platillos" style="width: 25%"></Column>
-      <Column field="status" header="Estado" style="width: 25%"></Column>
+      <Column field="status" header="Estado" style="width: 25%">
+        <template #body="slotProps">
+          <Tag :value="slotProps.data.status" :severity="getOrderStatus(slotProps.data.status)" />
+        </template>
+      </Column>
+      <template #expansion="slotProps">
+        <div class="p-4">
+          <h4>Platillos</h4>
+          <DataTable :value="slotProps.data.orders_dishes">
+            <Column field="recipe_name" header="Receta"></Column>
+            <Column field="status" header="Estatus">
+              <template #body="slotProps">
+                <Tag
+                  :value="slotProps.data.status.toLowerCase()"
+                  :severity="getOrderStatus(slotProps.data.status)"
+                />
+              </template>
+            </Column>
+          </DataTable>
+        </div>
+      </template>
 
       <template #empty>
         <tr class="center">
