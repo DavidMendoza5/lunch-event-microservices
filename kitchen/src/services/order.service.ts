@@ -15,6 +15,7 @@ import { IPaginatedOrderFilters } from '@/interfaces/order-filters.interface';
 import serverConfig from '@/config/server';
 import { IDataWithPagination } from '@/interfaces/get-paginated-data.interface';
 import IGetOrder from '@/interfaces/get-order.interface';
+import { statusToNumber } from '@/utils/status-to-number';
 
 @Service()
 export class OrderService {
@@ -168,7 +169,7 @@ export class OrderService {
       const orderFilters: WhereOptions = {};
 
       if (filters.id) orderFilters.id = filters.id;
-      if (filters.status) orderFilters.status = filters.status;
+      if (filters.status) orderFilters.status = statusToNumber(filters.status as keyof typeof STATUS_ENUM);
       if (filters.updated_at) orderFilters.updated_at = filters.updated_at;
 
       const totalOrders = await this.orderRepository.count(

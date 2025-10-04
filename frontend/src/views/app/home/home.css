@@ -4,9 +4,8 @@
 
 .section-container {
   display: flex;
-  justify-content: left;
+  justify-content: space-between;
   flex-wrap: wrap;
-  height: 100%;
 }
 
 .field {
@@ -19,4 +18,14 @@
 
 .sumit-order-btn {
   margin-top: 3%;
+}
+
+@media (max-width: 768px) {
+  .section-container {
+    gap: 2%;
+    display: block;
+  }
+  .card-component {
+    margin-top: 10%;
+  }
 }
