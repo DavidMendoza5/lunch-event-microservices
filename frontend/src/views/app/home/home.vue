@@ -5,7 +5,7 @@ import InputNumber from 'primevue/inputnumber'
 import Message from 'primevue/message'
 import { ref, reactive, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import { kitchenService } from '@/core/config'
+import { backendService } from '@/core/config'
 import Dish from '@/components/dishes/dish.vue'
 import OrderTable from '@/components/orders-table/order.vue'
 import type { IGetOrder } from '@/core/interfaces/get-order.interface'
@@ -68,7 +68,7 @@ const submitForm = async () => {
       plates: Number(form.plates),
     }
 
-    const response = await fetch(`${kitchenService.API_BASE}/api/orders`, {
+    const response = await fetch(`${backendService.KITCHEN_API_BASE}/api/orders`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ const getOrders = async () => {
   loadingOrders.value = true
   try {
     const response = await fetch(
-      `${kitchenService.API_BASE}/api/orders?limit=${pagination.value.itemsPerPage}&pageNumber=${pagination.value.currentPage}&status=pending`,
+      `${backendService.KITCHEN_API_BASE}/api/orders?limit=${pagination.value.itemsPerPage}&pageNumber=${pagination.value.currentPage}&status=pending`,
     )
     if (!response.ok) {
       throw new Error('Network response was not ok')

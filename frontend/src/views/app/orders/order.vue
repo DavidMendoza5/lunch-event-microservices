@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useToast } from 'primevue/usetoast'
 import './order.css'
-import { kitchenService } from '@/core/config'
+import { backendService } from '@/core/config'
 import { onMounted, ref } from 'vue'
 import type { IGetOrder } from '@/core/interfaces/get-order.interface'
 import type { IPagination } from '@/core/interfaces/pagination.interface'
@@ -25,7 +25,7 @@ const getOrders = async () => {
   loading.value = true
   try {
     const response = await fetch(
-      `${kitchenService.API_BASE}/api/orders?limit=${pagination.value.itemsPerPage}&pageNumber=${pagination.value.currentPage}`,
+      `${backendService.KITCHEN_API_BASE}/api/orders?limit=${pagination.value.itemsPerPage}&pageNumber=${pagination.value.currentPage}`,
     )
     if (!response.ok) {
       throw new Error('Network response was not ok')

@@ -169,7 +169,10 @@ export class OrderService {
       const orderFilters: WhereOptions = {};
 
       if (filters.id) orderFilters.id = filters.id;
-      if (filters.status) orderFilters.status = statusToNumber(filters.status as keyof typeof STATUS_ENUM);
+      if (filters.status)
+        orderFilters.status = statusToNumber(
+          filters.status as keyof typeof STATUS_ENUM,
+        );
       if (filters.updated_at) orderFilters.updated_at = filters.updated_at;
 
       const totalOrders = await this.orderRepository.count(
