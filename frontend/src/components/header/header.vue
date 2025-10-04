@@ -4,6 +4,6 @@ import './header.css'
 
 <template>
   <header class="main-header">
-    <h1>Lunch event</h1>
+    <h1>Jornada de Donación de Comida</h1>
   </header>
 </template>

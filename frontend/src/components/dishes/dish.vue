@@ -4,7 +4,7 @@ import Column from 'primevue/column'
 import { useToast } from 'primevue/usetoast'
 import { ref, onMounted } from 'vue'
 import type { Dish } from '@/core/interfaces/dish.interface'
-import { kitchenService } from '@/core/config'
+import { backendService } from '@/core/config'
 
 const dishes = ref<Dish[]>([])
 const loading = ref(false)
@@ -19,7 +19,7 @@ onMounted(async () => {
 const getDishes = async () => {
   try {
     loading.value = true
-    const response = await fetch(`${kitchenService.API_BASE}/api/recipes`)
+    const response = await fetch(`${backendService.KITCHEN_API_BASE}/api/recipes`)
     if (!response.ok) {
       throw new Error('Network response was not ok')
     }
