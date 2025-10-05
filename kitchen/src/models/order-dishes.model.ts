@@ -59,4 +59,16 @@ export default class OrderDishModel extends Model<
     allowNull: false,
   })
   status!: STATUS_ENUM;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  updated_at?: Date;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  created_at?: Date;
 }

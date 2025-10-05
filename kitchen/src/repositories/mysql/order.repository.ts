@@ -72,7 +72,7 @@ export class OrderRepository implements IOrderRepository {
         {
           model: OrderDishModel,
           as: 'orders_dishes',
-          attributes: ['id', 'recipe_id', 'status'],
+          attributes: ['id', 'recipe_id', 'status', 'created_at', 'updated_at'],
           include: [
             {
               model: RecipeModel,
@@ -101,6 +101,7 @@ export class OrderRepository implements IOrderRepository {
       id: order.id,
       plates: order.plates,
       status: STATUS_ENUM[order.status],
+      created_at: order.created_at,
       updated_at: order.updated_at,
       orders_dishes: order.orders_dishes
         ? order.orders_dishes.map((od) => ({
@@ -108,6 +109,8 @@ export class OrderRepository implements IOrderRepository {
             recipe_id: od.recipe_id,
             status: STATUS_ENUM[od.status],
             recipe_name: od.recipe ? od.recipe.name : undefined,
+            created_at: od.created_at ?? undefined,
+            updated_at: od.updated_at ?? undefined,
           }))
         : undefined,
     };

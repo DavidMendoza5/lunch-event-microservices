@@ -5,6 +5,7 @@ interface IGetOrder extends Omit<IOrderModel, 'status'> {
   id: number;
   status: string;
   orders_dishes?: IOrderDishResponse[];
+  created_at?: Date;
 }
 
 export default IGetOrder;
