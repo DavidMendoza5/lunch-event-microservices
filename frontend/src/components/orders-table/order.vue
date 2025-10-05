@@ -43,12 +43,17 @@ const getOrderStatus = (status: string) => {
       <Column expander style="width: 5rem" />
       <Column field="id" header="ID" style="width: 25%"></Column>
       <Column field="plates" header="No. Platillos" style="width: 25%"></Column>
-      <Column field="updated_at" header="Fecha de Actualización" style="width: 25%">
+      <Column field="updated_at" header="Actualización" style="width: 25%">
         <template #body="slotProps">
           {{ new Date(slotProps.data.updated_at).toLocaleString() }}
         </template>
       </Column>
-      <Column field="status" header="Estado" style="width: 25%">
+      <Column field="created_at" header="Creación">
+        <template #body="slotProps">
+          {{ new Date(slotProps.data.created_at).toLocaleString() }}
+        </template>
+      </Column>
+      <Column field="status" header="Estatus" style="width: 25%">
         <template #body="slotProps">
           <Tag :value="slotProps.data.status" :severity="getOrderStatus(slotProps.data.status)" />
         </template>
@@ -58,6 +63,16 @@ const getOrderStatus = (status: string) => {
           <h4>Platillos</h4>
           <DataTable :value="slotProps.data.orders_dishes">
             <Column field="recipe_name" header="Receta"></Column>
+            <Column field="updated_at" header="Actualización" style="width: 25%">
+              <template #body="slotProps">
+                {{ new Date(slotProps.data.updated_at).toLocaleString() }}
+              </template>
+            </Column>
+            <Column field="created_at" header="Creación">
+              <template #body="slotProps">
+                {{ new Date(slotProps.data.created_at).toLocaleString() }}
+              </template>
+            </Column>
             <Column field="status" header="Estatus">
               <template #body="slotProps">
                 <Tag

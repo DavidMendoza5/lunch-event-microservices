@@ -10,19 +10,9 @@ const isCollapsed = ref(false)
 
 let mediaQuery: MediaQueryList | null = null
 
-const handleMediaChange = (e: MediaQueryListEvent) => {
-  isCollapsed.value = e.matches
-}
-
 onMounted(() => {
   mediaQuery = window.matchMedia('(max-width: 768px)')
-  mediaQuery.addEventListener('change', handleMediaChange)
-})
-
-onUnmounted(() => {
-  if (mediaQuery) {
-    mediaQuery.removeEventListener('change', handleMediaChange)
-  }
+  isCollapsed.value = mediaQuery.matches
 })
 
 const collapseIcon = computed(() =>

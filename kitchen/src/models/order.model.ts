@@ -35,6 +35,12 @@ export default class OrderModel extends Model<OrderModel, IOrderModel> {
   })
   updated_at!: Date;
 
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  created_at?: Date;
+
   @HasMany(() => OrderDishModel, 'order_id')
   orders_dishes!: OrderDishModel[];
 }
