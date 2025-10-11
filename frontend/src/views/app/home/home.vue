@@ -139,6 +139,10 @@ const onPageChange = (event: any) => {
   pagination.value.currentPage = event.page + 1
   getOrders()
 }
+
+const refreshOrders = async () => {
+  await getOrders()
+}
 </script>
 
 <template>
@@ -184,6 +188,7 @@ const onPageChange = (event: any) => {
           :loading="loadingOrders"
           :pagination="pagination"
           v-on:page-change="onPageChange"
+          :refreshOrders="refreshOrders"
         />
       </div>
     </section>

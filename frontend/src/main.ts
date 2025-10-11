@@ -7,6 +7,7 @@ import App from './App.vue'
 import './assets/main.css'
 import router from './router'
 import Toast from 'primevue/toast'
+import 'primeicons/primeicons.css'
 
 const app = createApp(App)
 

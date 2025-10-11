@@ -3,6 +3,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Paginator from 'primevue/paginator'
 import Tag from 'primevue/tag'
+import Button from 'primevue/button'
 import './order.css'
 import { ref } from 'vue'
 import type { IPagination } from '@/core/interfaces/pagination.interface'
@@ -13,6 +14,7 @@ const props = defineProps<{
   orders: IGetOrder[]
   loading: boolean
   onPageChange: (event: any) => void
+  refreshOrders?: () => Promise<void>
 }>()
 const expandedRows = ref({})
 
@@ -27,6 +29,12 @@ const getOrderStatus = (status: string) => {
     return 'info'
   }
   return 'contrast'
+}
+
+const handleRefresh = async () => {
+  if (props.refreshOrders) {
+    await props.refreshOrders()
+  }
 }
 </script>
 
@@ -93,7 +101,11 @@ const getOrderStatus = (status: string) => {
         :rows="pagination.itemsPerPage"
         :totalRecords="pagination.totalItems"
         @page="onPageChange"
-      ></Paginator>
+      >
+        <template #start>
+          <Button type="button" icon="pi pi-refresh" @click="handleRefresh" :loading="loading" v-if="props.refreshOrders"/>
+        </template>
+      </Paginator>
       <div class="pagination-info">
         {{ pagination.itemsPerPage }} de {{ pagination.totalItems }}
       </div>
