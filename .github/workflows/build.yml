@@ -26,13 +26,13 @@ jobs:
     - name: Install dependencies for ${{ matrix.service }}
       run: npm ci
       working-directory: ${{ matrix.service }}
-    
-    - name: TypeScript compilation for ${{ matrix.service }}
-      run: npm run build
-      working-directory: ${{ matrix.service }}
 
     - name: Tests for ${{ matrix.service }}
       run: npm run test
+      working-directory: ${{ matrix.service }}
+    
+    - name: TypeScript compilation for ${{ matrix.service }}
+      run: npm run build
       working-directory: ${{ matrix.service }}
 
   build-vue-app:
