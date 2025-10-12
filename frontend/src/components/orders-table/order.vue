@@ -103,11 +103,18 @@ const handleRefresh = async () => {
         @page="onPageChange"
       >
         <template #start>
-          <Button type="button" icon="pi pi-refresh" @click="handleRefresh" :loading="loading" v-if="props.refreshOrders"/>
+          <Button
+            type="button"
+            icon="pi pi-refresh"
+            @click="handleRefresh"
+            :loading="loading"
+            v-if="props.refreshOrders"
+          />
         </template>
       </Paginator>
       <div class="pagination-info">
-        {{ pagination.itemsPerPage }} de {{ pagination.totalItems }}
+        Mostrando {{ pagination.startItem }} - {{ pagination.endItem }} de
+        {{ pagination.totalItems }}
       </div>
     </div>
   </div>

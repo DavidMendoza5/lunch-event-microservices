@@ -17,6 +17,8 @@ const pagination = ref<IPagination>({
   itemsPerPage: 5,
   totalItems: 0,
   totalPages: 1,
+  startItem: 0,
+  endItem: 0,
 })
 
 const toast = useToast()
@@ -55,6 +57,8 @@ const getSales = async () => {
     purchases.value = marketPurchases
     pagination.value.totalItems = Number(purchasesData.pagination.totalItems)
     pagination.value.totalPages = Number(purchasesData.pagination.totalPages)
+    pagination.value.startItem = Number(purchasesData.pagination.startItem)
+    pagination.value.endItem = Number(purchasesData.pagination.endItem)
   } catch (error) {
     console.error('Error fetching purchases:', error)
     toast.add({
@@ -108,7 +112,8 @@ const onPageChange = (event: any) => {
           @page="onPageChange"
         ></Paginator>
         <div class="pagination-info">
-          {{ pagination.itemsPerPage }} de {{ pagination.totalItems }}
+          Mostrando {{ pagination.startItem }} - {{ pagination.endItem }} de
+          {{ pagination.totalItems }}
         </div>
       </div>
     </div>

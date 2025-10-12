@@ -64,16 +64,29 @@ export class OrderController {
           transaction,
         );
       });
+      const currentPage = Number(queryParams.pageNumber) || 1;
+      const itemsPerPage = Number(limit);
+
+      const startItem =
+        ordersInformation.data.length > 0
+          ? (currentPage - 1) * itemsPerPage + 1
+          : 0;
+      const endItem =
+        ordersInformation.data.length > 0
+          ? startItem + ordersInformation.data.length - 1
+          : 0;
 
       const response: IApiPaginatedResponse<IGetOrder> = {
         success: true,
         message: 'Orders retrieved successfully',
         data: ordersInformation.data,
         pagination: {
-          currentPage: Number(queryParams.pageNumber) || 1,
+          currentPage,
           totalPages: ordersInformation.totalPages,
           totalItems: ordersInformation.totalData,
-          itemsPerPage: Number(limit),
+          itemsPerPage,
+          startItem,
+          endItem,
         },
       };
 

@@ -34,7 +34,9 @@ describe('CreateOrder', () => {
     const result = await repo.save(payload);
 
     expect(OrderModel.create).toHaveBeenCalledTimes(1);
-    expect(OrderModel.create).toHaveBeenCalledWith(payload, { transaction: undefined});
+    expect(OrderModel.create).toHaveBeenCalledWith(payload, {
+      transaction: undefined,
+    });
     expect(result).toEqual(mockOrder);
   });
 });

@@ -7,5 +7,7 @@ export interface IApiPaginatedResponse<T> {
     totalPages: number;
     totalItems: number;
     itemsPerPage: number;
+    startItem: number;
+    endItem: number;
   };
 }
