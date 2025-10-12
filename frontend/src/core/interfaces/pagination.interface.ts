@@ -3,4 +3,6 @@ export interface IPagination {
   itemsPerPage: number
   totalItems: number
   totalPages: number
+  startItem: number
+  endItem: number
 }

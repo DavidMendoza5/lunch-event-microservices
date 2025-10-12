@@ -5,15 +5,15 @@ jest.mock('@/models/recipe.model', () => ({
   },
 }));
 
-import RecipeModel from "@/models/recipe.model";
-import { RecipeRepository } from "@/repositories/mysql/recipe.repository";
+import RecipeModel from '@/models/recipe.model';
+import { RecipeRepository } from '@/repositories/mysql/recipe.repository';
 
 describe('GetRecipes', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-	  it('Should return all recipes', async () => {
+  it('Should return all recipes', async () => {
     const mockRecipes = [
       {
         id: 1,
@@ -35,7 +35,7 @@ describe('GetRecipes', () => {
     expect(RecipeModel.findAll).toHaveBeenCalledTimes(1);
     expect(result).toBeDefined();
     expect(result).toHaveLength(2);
-  })
+  });
 
   it('Should return all recipes with its ingredients', async () => {
     const mockRecipes = [
@@ -66,5 +66,5 @@ describe('GetRecipes', () => {
     expect(RecipeModel.findAll).toHaveBeenCalledTimes(1);
     expect(result).toBeDefined();
     expect(result).toHaveLength(2);
-  })
-})
+  });
+});

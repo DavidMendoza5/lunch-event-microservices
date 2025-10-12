@@ -15,6 +15,8 @@ const pagination = ref<IPagination>({
   itemsPerPage: 5,
   totalItems: 0,
   totalPages: 1,
+  startItem: 0,
+  endItem: 0,
 })
 
 onMounted(async () => {
@@ -34,6 +36,8 @@ const getOrders = async () => {
     orders.value = data.data
     pagination.value.totalItems = Number(data.pagination.totalItems)
     pagination.value.totalPages = Number(data.pagination.totalPages)
+    pagination.value.startItem = Number(data.pagination.startItem)
+    pagination.value.endItem = Number(data.pagination.endItem)
   } catch (error) {
     console.error('Error fetching orders:', error)
     toast.add({

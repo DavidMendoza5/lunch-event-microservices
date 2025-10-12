@@ -32,6 +32,18 @@ export class PurchaseContoller {
         );
       });
 
+      const currentPage = Number(queryParams.pageNumber) || 1;
+      const itemsPerPage = Number(limit);
+
+      const startItem =
+        purchasesInformation.data.length > 0
+          ? (currentPage - 1) * itemsPerPage + 1
+          : 0;
+      const endItem =
+        purchasesInformation.data.length > 0
+          ? startItem + purchasesInformation.data.length - 1
+          : 0;
+
       const response: IApiPaginatedResponse<IGetPurchase> = {
         success: true,
         message: 'Purchases retrieved successfully',
@@ -41,6 +53,8 @@ export class PurchaseContoller {
           totalPages: purchasesInformation.totalPages,
           totalItems: purchasesInformation.totalData,
           itemsPerPage: Number(limit),
+          startItem,
+          endItem,
         },
       };
 
