@@ -25,43 +25,43 @@ jobs:
         with:
           node-version: '22.19.0'
 
-      - name: Deploy to DigitalOcean Droplet
-        env:
-          HOST: ${{ secrets.INSTANCE_HOST }}
-          USERNAME: ${{ secrets.INSTANCE_USERNAME }}
-          KEY: ${{ secrets.INSTANCE_SSH_KEY }}
-          DEST_PATH: ${{ secrets.INSTANCE_DEST_PATH }}
-          KITCHEN_ENV: ${{ secrets.KITCHEN_ENV }}
-          KITCHEN_ENV_DB: ${{ secrets.KITCHEN_ENV_DB }}
-          WAREHOUSE_ENV: ${{ secrets.WAREHOUSE_ENV }}
-          WAREHOUSE_ENV_DB: ${{ secrets.WAREHOUSE_ENV_DB }}
-          MARKET_ENV: ${{ secrets.MARKET_ENV }}
-          MARKET_ENV_DB: ${{ secrets.MARKET_ENV_DB }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+      # - name: Deploy to DigitalOcean Droplet
+      #   env:
+      #     HOST: ${{ secrets.INSTANCE_HOST }}
+      #     USERNAME: ${{ secrets.INSTANCE_USERNAME }}
+      #     KEY: ${{ secrets.INSTANCE_SSH_KEY }}
+      #     DEST_PATH: ${{ secrets.INSTANCE_DEST_PATH }}
+      #     KITCHEN_ENV: ${{ secrets.KITCHEN_ENV }}
+      #     KITCHEN_ENV_DB: ${{ secrets.KITCHEN_ENV_DB }}
+      #     WAREHOUSE_ENV: ${{ secrets.WAREHOUSE_ENV }}
+      #     WAREHOUSE_ENV_DB: ${{ secrets.WAREHOUSE_ENV_DB }}
+      #     MARKET_ENV: ${{ secrets.MARKET_ENV }}
+      #     MARKET_ENV_DB: ${{ secrets.MARKET_ENV_DB }}
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "$KEY" > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
 
-          echo "Copying files..."
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -rv docker-compose.yml docker-compose.prod.yml $USERNAME@$HOST:$DEST_PATH/
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -r kitchen warehouse market $USERNAME@$HOST:$DEST_PATH/
+      #     echo "Copying files..."
+      #     scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -rv docker-compose.yml docker-compose.prod.yml $USERNAME@$HOST:$DEST_PATH/
+      #     scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -r kitchen warehouse market $USERNAME@$HOST:$DEST_PATH/
 
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $USERNAME@$HOST "
-            cd $DEST_PATH
-            # kitchen
-            echo \"$KITCHEN_ENV\" > $DEST_PATH/kitchen/.env
-            echo \"$KITCHEN_ENV_DB\" > $DEST_PATH/kitchen/.env.db
+      #     ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $USERNAME@$HOST "
+      #       cd $DEST_PATH
+      #       # kitchen
+      #       echo \"$KITCHEN_ENV\" > $DEST_PATH/kitchen/.env
+      #       echo \"$KITCHEN_ENV_DB\" > $DEST_PATH/kitchen/.env.db
 
-            # warehouse
-            echo \"$WAREHOUSE_ENV\" > $DEST_PATH/warehouse/.env
-            echo \"$WAREHOUSE_ENV_DB\" > $DEST_PATH/warehouse/.env.db
+      #       # warehouse
+      #       echo \"$WAREHOUSE_ENV\" > $DEST_PATH/warehouse/.env
+      #       echo \"$WAREHOUSE_ENV_DB\" > $DEST_PATH/warehouse/.env.db
 
-            # market
-            echo \"$MARKET_ENV\" > $DEST_PATH/market/.env
-            echo \"$MARKET_ENV_DB\" > $DEST_PATH/market/.env.db
+      #       # market
+      #       echo \"$MARKET_ENV\" > $DEST_PATH/market/.env
+      #       echo \"$MARKET_ENV_DB\" > $DEST_PATH/market/.env.db
 
-            docker-compose -f docker-compose.prod.yml down
-            docker-compose -f docker-compose.prod.yml build --no-cache
-            docker-compose -f docker-compose.prod.yml up -d
-          "
+      #       docker-compose -f docker-compose.prod.yml down
+      #       docker-compose -f docker-compose.prod.yml build --no-cache
+      #       docker-compose -f docker-compose.prod.yml up -d
+      #     "
 
